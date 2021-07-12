@@ -2,7 +2,7 @@ blueprint:
   name: Calendar Switch Access Profile
   description: Switch on or off according to Calendar State
   domain: automation
-  source_url: https://github.com/mdonath/ha-blueprints/blob/main/calendar_switch.yaml
+  source_url: https://raw.githubusercontent.com/mdonath/ha-blueprints/main/calendar_switch.yaml
   input:
     input_calendar:
       name: Calendar
