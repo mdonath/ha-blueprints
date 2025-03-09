@@ -1,0 +1,97 @@
+blueprint:
+  name: Awtrix Powerrr
+  description: Shows Power Consumption and/or Production
+  domain: automation
+  source_url: https://raw.githubusercontent.com/mdonath/ha-blueprints/main/awtrix_powerrr.yaml
+
+  homeassistant:
+    min_version: "2024.6.0"
+
+  input:
+    awtrix:
+      name: AWTRIX Device
+      description: Select the Awtrix light device
+      selector:
+        device:
+          filter:
+            - integration: mqtt
+              manufacturer: Blueforcer
+              model: AWTRIX 3
+          multiple: true
+
+    power_source:
+      name: Power Sensor
+      description: A sensor providing the current consumption of production (negative!) of the house.
+      selector:
+        entity:
+          filter:
+            - domain:
+              - sensor
+          multiple: false
+
+    icon_power_consumption:
+      name: Icon for power consumption
+      description: >
+
+        The default power_consumption icon is: 
+
+          ![](https://developer.lametric.com/content/apps/icon_thumbs/21520_icon_thumb.gif?v=2) - `21520`
+
+      selector:
+        text:
+      default: "21520"
+
+    icon_power_production:
+      name: Icon for power production
+      description: >
+
+        The default power_production icon is: 
+
+          ![](https://developer.lametric.com/content/apps/icon_thumbs/21521_icon_thumb.gif?v=2) - `21521`
+
+      selector:
+        text:
+      default: "21521"
+
+mode: single
+variables:
+  device_ids: !input awtrix
+  app_id: "powerrr"
+  devices_topics: |
+    {%- macro get_device_topic(device_id) %}
+      {{ states((device_entities(device_id) | select('search', 'device_topic') | list)[0]) }}
+    {%- endmacro %}
+    {%- set ns = namespace(devices = []) %}
+    {%- for device_id in device_ids %}
+      {%- set device = get_device_topic(device_id)|replace(' ','') %}
+      {% set ns.devices = ns.devices + [ device ~ '/custom/' + app_id] %}
+    {%- endfor %}
+    {{ ns.devices }}
+
+  powerrr_source_var: !input power_source
+  powerrr_value: '{{ states(powerrr_source_var) }}'
+  powerrr_unit: 'W'
+
+  icon_power_consumption: !input icon_power_consumption
+  icon_power_production: !input icon_power_production
+  powerrr_icon: '{{ iif(powerrr_value > 0, icon_power_consumption, icon_power_production) }}'
+
+  powerrr_text_color: '{{ iif(powerrr_value > 0, "#FF0000", "#00FF00") }}'
+
+  payload: '{"icon":"{{powerrr_icon}}", "text":"{{ powerrr_value }}{{ powerrr_unit }}", "color":"{{powerrr_text_color}}"}'
+
+triggers:
+  - trigger: time_pattern
+    minutes: /1
+
+actions:
+  sequence:
+    - repeat:
+        for_each: "{{ devices_topics }}"
+        sequence:
+          - action: mqtt.publish
+            data:
+              qos: 0
+              retain: false
+              topic: "{{ repeat.item }}"
+              payload: "{{ payload }}"
