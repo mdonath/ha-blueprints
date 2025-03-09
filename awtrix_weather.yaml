@@ -58,11 +58,11 @@ triggers:
 actions:
     sequence:
     -   repeat:
-        for_each: "{{ devices_topics }}"
-        sequence:
-            -   action: mqtt.publish
-                data:
-                    qos: 0
-                    retain: false
-                    topic: "{{ repeat.item }}"
-                    payload: "{{ payload }}"
+            for_each: "{{ devices_topics }}"
+            sequence:
+                -   action: mqtt.publish
+                    data:
+                        qos: 0
+                        retain: false
+                        topic: "{{ repeat.item }}"
+                        payload: "{{ payload }}"
