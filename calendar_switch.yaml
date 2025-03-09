@@ -25,8 +25,8 @@ trigger:
 
 condition: []
 
-action:
-  - service: 'switch.turn_{{trigger.to_state.state}}'
+actions:
+  - action: 'switch.turn_{{trigger.to_state.state}}'
     target:
       entity_id: !input target_switch
 
