@@ -14,9 +14,7 @@ blueprint:
       name: Target Switch
       description: The switch that should follow the schedule in the calendar
       selector:
-        entity:
-          integration: fritzbox_tools
-          domain: switch
+        target:
 
 
 trigger:
