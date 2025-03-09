@@ -2,7 +2,7 @@ blueprint:
     name: AWTRIX Weather
     description: "This blueprint will show the weather on a AWTRIX display."
     domain: automation
-    source_url: https://raw.githubusercontent.com/mdonath/ha-blueprints/main/calendar_switch.yaml
+    source_url: https://raw.githubusercontent.com/mdonath/ha-blueprints/main/awtrix_weather.yaml
 
     homeassistant:
         min_version: "2024.6.0"
