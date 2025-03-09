@@ -12,20 +12,20 @@ blueprint:
             name: AWTRIX Device
             description: Select the Awtrix light device
             selector:
-            device:
-                filter:
-                    -   integration: mqtt
-                        manufacturer: Blueforcer
-                        model: AWTRIX 3
-                multiple: true
+                device:
+                    filter:
+                        -   integration: mqtt
+                            manufacturer: Blueforcer
+                            model: AWTRIX 3
+                    multiple: true
         weather_entity:
             name: Weather entity
             description: Set the entity for weather information
             selector:
-            entity:
-                filter:
-                - domain: weather
-                multiple: false
+                entity:
+                    filter:
+                    - domain: weather
+                    multiple: false
 
 mode: single
 variables:
